@@ -18,7 +18,7 @@ function takeSnapshot(){
 
 console.log('ml5 version: ' + ml5.version);
 
-classifier = ml5.imageClassifier('hhttps://teachablemachine.withgoogle.com/models/NHCJ0qXjg/model.json', modelLoaded);
+classifier = ml5.imageClassifier('https://teachablemachine.withgoogle.com/models/NHCJ0qXjg/model.json', modelLoaded);
 
 function modelLoaded() {
     console.log("Model Loaded!");
@@ -26,8 +26,40 @@ function modelLoaded() {
 
 function speak() {
     var synth = window.speechSynthesis;
-    speak_data_1 = "The First Prediction Is: " + prediction_1;
-    speak_data_2 = "And, The Second Prediction Is: " + prediction_2;
-    var utterThis = new SpeechSynthesisUtterance(speak_data_1 + speak_data_2);
+    speak_data_1 = "Prediction Is: " + prediction_1;
+    var utterThis = new SpeechSynthesisUtterance(speak_data_1);
     synth.speak(utterThis);
+}
+function check() {
+    img = document.getElementById('captured_image');
+    classifier.classify(img, gotResult);
+}
+
+function gotResult(error, results) {
+    if (error) {
+        console.log(error);
+    }
+    else {
+        console.log(results);
+        document.getElementById("result_emotion_name").innerHTML = results[0].label;
+
+        prediction_1 = results[0].label;
+        speak();
+
+        if (results[0].label == "Best") {
+            document.getElementById("update_hand_gesture").innerHTML = "&#128077;";
+        }
+        if (results[0].label == "Amazing") {
+            document.getElementById("update_hand_gesture").innerHTML = "&#128076;";
+        }
+        if (results[0].label == "Victory") {
+            document.getElementById("update_hand_gesture").innerHTML = "&#9996;";
+        }
+        if (results[0].label == "Bad") {
+            document.getElementById("update_hand_gesture").innerHTML = "&#128078;";
+        }
+        if (results[0].label == "Fist") {
+            document.getElementById("update_hand_gesture").innerHTML = "&#9994;";
+        }
+    }
 }
